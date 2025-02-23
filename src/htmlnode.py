@@ -29,6 +29,7 @@ class HTMLNode:
             attributes += f" {key}=\"{value}\""
         return attributes
 
+
 class LeafNode(HTMLNode):
     def __init__(
             self, tag: Optional[str], value: str,
