@@ -1,4 +1,4 @@
-from typing import Optional, Self
+from typing import Optional
 
 
 class HTMLNode:
@@ -6,7 +6,7 @@ class HTMLNode:
             self,
             tag: Optional[str] = None,
             value: Optional[str] = None,
-            children: Optional[list[Self]] = None,
+            children: Optional[list["HTMLNode"]] = None,
             props: Optional[dict] = None,
     ) -> None:
         self.tag = tag
@@ -38,7 +38,25 @@ class LeafNode(HTMLNode):
 
     def to_html(self) -> str:
         if self.value == None:
-            raise ValueError("LeafNode must have a value!")
+            raise ValueError("Leaf node must have a value!")
         if self.tag == None:
             return self.value
         return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
+
+
+class ParentNode(HTMLNode):
+    def __init__(
+            self, tag: str, children: list["HTMLNode"],
+            props: Optional[dict] = None) -> None:
+        super().__init__(tag, children=children, props=props)
+
+    def to_html(self) -> str:
+        if self.tag == None:
+            raise ValueError("Parent node must have a tag!")
+        if self.children == None:
+            raise ValueError("Parent node must have atleast one children!")
+        html = f"<{self.tag}{self.props_to_html()}>"
+        for child in self.children:
+            html += child.to_html()
+        html += f"</{self.tag}>"
+        return html
