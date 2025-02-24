@@ -35,7 +35,9 @@ class TestHTMLNode(unittest.TestCase):
 class TestLeafNode(unittest.TestCase):
     def test_raise_value_error(self) -> None:
         leaf_node: LeafNode = LeafNode("p", None)
-        self.assertRaises(ValueError, leaf_node.to_html)
+        with self.assertRaisesRegex(
+                ValueError, "Leaf node must have a value!"):
+            leaf_node.to_html()
 
     def test_eq(self) -> None:
         leaf_node: LeafNode = LeafNode("a", "Click me!",
@@ -52,13 +54,17 @@ class TestLeafNode(unittest.TestCase):
 
 class TestParentNode(unittest.TestCase):
     def test_raise_tag_value_error(self) -> None:
-        parent_node: ParentNode = ParentNode(None,
-                                             [LeafNode("p", "no parent")])
-        self.assertRaises(ValueError, parent_node.to_html)
+        parent_node: ParentNode = ParentNode(
+                None, [LeafNode("p", "no parent")])
+        with self.assertRaisesRegex(
+                ValueError, "Parent node must have a tag!"):
+            parent_node.to_html()
 
     def test_raise_children_value_error(self) -> None:
         parent_node: ParentNode = ParentNode("article", None)
-        self.assertRaises(ValueError, parent_node.to_html)
+        with self.assertRaisesRegex(
+                ValueError, "Parent node must have atleast one children!"):
+            parent_node.to_html()
 
     def test_eq(self) -> None:
         parent_node: ParentNode = ParentNode(
