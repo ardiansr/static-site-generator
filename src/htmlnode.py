@@ -1,3 +1,4 @@
+from types import NotImplementedType
 from typing import Optional
 
 
@@ -13,6 +14,14 @@ class HTMLNode:
         self.value = value
         self.children = children
         self.props = props
+
+    def __eq__(self, other: object) -> bool | NotImplementedType:
+        if not isinstance(other, HTMLNode):
+            return NotImplemented
+        return (other.tag == self.tag and
+                other.value == self.value and
+                other.children == self.children and
+                other.props == self.props)
 
     def __repr__(self) -> str:
         return (f"HTMLNode({self.tag}, {self.value},"
