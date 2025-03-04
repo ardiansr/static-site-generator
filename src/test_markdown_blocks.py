@@ -1,8 +1,33 @@
 import unittest
 
 from htmlnode import HTMLNode
-from markdown_blocks import (BlockType, block_to_block_type,
+from markdown_blocks import (BlockType, block_to_block_type, extract_title,
                              markdown_to_blocks, markdown_to_html_node)
+
+
+class TestExtractTitle(unittest.TestCase):
+    def test_raise_value_error(self) -> None:
+        markdown: str = """
+        ## It is not heading 1 title.
+        """
+        with self.assertRaisesRegex(ValueError, "Heading 1 is not found."):
+            extract_title(markdown)
+
+    def test_eq(self) -> None:
+        markdown: str = """
+        # Heading 1
+
+        ## Heading 2
+
+        ### Heading 3
+
+        #### Heading 4
+
+        ##### Heading 5
+
+        ###### Heading 6
+        """
+        self.assertEqual(extract_title(markdown), "Heading 1")
 
 
 class TestMarkdownToHTMLNode(unittest.TestCase):

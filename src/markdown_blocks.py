@@ -15,6 +15,14 @@ class BlockType(Enum):
     ORDERED_LIST = "ordered_list"
 
 
+def extract_title(markdown: str) -> str:
+    blocks: list[str] = markdown_to_blocks(markdown)
+    for block in blocks:
+        if block.startswith("# "):
+            return block.lstrip("# ").rstrip()
+    raise ValueError("Heading 1 is not found.")
+
+
 def markdown_to_html_node(markdown: str) -> HTMLNode:
     blocks: list[str] = markdown_to_blocks(markdown)
     children: list[HTMLNode] = []
