@@ -41,6 +41,15 @@ def copy_static(src: str, dst: str) -> None:
 
 
 def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
+    """
+    Generating markdown file into html page using html template.
+    Read both markdown and template, write it into new html.
+
+    Args:
+        from_path: Source markdown path files
+        template_path: Source template path files
+        dest_path: Destination new html path files
+    """
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     markdown_fd: TextIOWrapper = open(from_path, encoding="utf-8")
     template_fd: TextIOWrapper = open(template_path, encoding="utf-8")
