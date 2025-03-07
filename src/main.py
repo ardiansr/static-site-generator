@@ -6,14 +6,18 @@ from markdown_blocks import extract_title, markdown_to_html_node
 
 
 def main() -> None:
+    """
+    Copy all files and directories from static directory into
+    public directory. And generate all markdown files in
+    content directory to html files in public directory.
+    """
     root_dir: str = os.getcwd()
     source_dir: str = os.path.join(root_dir, "static/")
     dest_dir: str = os.path.join(root_dir, "public/")
     copy_static(source_dir, dest_dir)
-    content_path: str = os.path.join(root_dir, "content/index.md")
+    content_dir: str = os.path.join(root_dir, "content")
     template_path: str = os.path.join(root_dir, "template.html")
-    dest_path: str = os.path.join(dest_dir, "index.html")
-    generate_page(content_path, template_path, dest_path)
+    generate_pages_recursive(content_dir, template_path, dest_dir)
 
 
 def copy_static(src: str, dst: str) -> None:
@@ -38,6 +42,32 @@ def copy_static(src: str, dst: str) -> None:
             continue
         print(f"Proccessing directory: {src_path}")
         copy_static(src_path, dst_path)
+
+
+def generate_pages_recursive(
+        content_dir: str, template_path: str, dest_path: str) -> None:
+    entries: list[str] = os.listdir(content_dir)
+    """
+    Recursively generate pages from content directories into
+    destination directories.
+
+    Args:
+        content_dir: Source directory path
+        template_path: Source template path files
+        dest_path: Destination directory path
+    """
+    for entry in entries:
+        parent_dir: str = os.path.join(dest_path, entry)
+        dest_dir: str = os.path.dirname(parent_dir)
+        if dest_dir:
+            os.makedirs(dest_dir, exist_ok=True)
+        from_path: str = os.path.join(content_dir, entry)
+        if os.path.isfile(from_path) and entry.endswith(".md"):
+            html_file: str = entry.replace(".md", ".html")
+            parent_dir = os.path.join(dest_dir, html_file)
+            generate_page(from_path, template_path, parent_dir)
+            continue
+        generate_pages_recursive(from_path, template_path, parent_dir)
 
 
 def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
